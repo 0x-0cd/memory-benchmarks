@@ -158,7 +158,7 @@ Results using the Mem0 managed platform with the v3 memory pipeline.
 
 #### LongMemEval
 
-| Metric | top_200 | top_50 |
+| Metric | Top 200 | Top 50 |
 |--------|---------|--------|
 | **Overall** | **93.4%** (467/500) | **90.4%** (452/500) |
 | knowledge-update | 96.2% (75/78) | 96.2% (75/78) |
@@ -170,13 +170,13 @@ Results using the Mem0 managed platform with the v3 memory pipeline.
 
 #### LoCoMo
 
-| Metric | top_200 | top_50 |
+| Metric | Top 200 | Top 50 |
 |--------|---------|--------|
 | **Overall** | **91.6%** (1410/1540) | **82.7%** (1273/1540) |
 
 #### BEAM
 
-| Dataset | top_200 | | top_50 | |
+| Dataset | Top 200 | | Top 50 | |
 |---------|---------|---|--------|---|
 | | **Pass Rate** | **Avg Score** | **Pass Rate** | **Avg Score** |
 | **BEAM 1M** (700 questions) | **70.1%** (491/700) | 0.641 | **67.1%** (470/700) | 0.604 |
@@ -185,7 +185,7 @@ Results using the Mem0 managed platform with the v3 memory pipeline.
 <details>
 <summary>BEAM breakdown by memory ability type</summary>
 
-**BEAM 1M (top_200)**
+**BEAM 1M (Top 200)**
 
 | Ability | Avg Score | Pass Rate |
 |---------|-----------|-----------|
@@ -200,7 +200,7 @@ Results using the Mem0 managed platform with the v3 memory pipeline.
 | abstention | 0.525 | 39/70 |
 | contradiction_resolution | 0.357 | 34/70 |
 
-**BEAM 10M (top_200)**
+**BEAM 10M (Top 200)**
 
 | Ability | Avg Score | Pass Rate |
 |---------|-----------|-----------|
@@ -223,10 +223,10 @@ LongMemEval results using the self-hosted Mem0 OSS pipeline with different LLMs 
 
 | Extraction Model | Overall | SS-User | SS-Asst | SS-Pref | Knowledge Update | Temporal Reasoning | Multi-Session |
 |-----------------|---------|---------|---------|---------|------------------|-------------------|---------------|
-| **GPT-5** (OpenAI) | **91.0%** | 95.7% | 92.9% | 93.3% | 91.0% | 94.7% | 83.5% |
-| **GPT-OSS-120B** (Parasail) | **89.8%** | 95.7% | 96.4% | 93.3% | 89.5% | 80.5% | 79.7% |
-| **Llama 4 Maverick** (Parasail) | **88.6%** | 97.1% | 75.0% | 93.3% | 93.6% | 90.2% | 84.2% |
-| **Gemma 4 31B** (Parasail) | **88.6%** | 95.7% | 83.9% | 93.3% | 94.9% | 91.7% | 78.9% |
+| **GPT-5** | **91.0%** | 95.7% | 92.9% | 93.3% | 91.0% | 94.7% | 83.5% |
+| **GPT-OSS-120B** | **89.8%** | 95.7% | 96.4% | 93.3% | 89.5% | 80.5% | 79.7% |
+| **Llama 4 Maverick** | **88.6%** | 97.1% | 75.0% | 93.3% | 93.6% | 90.2% | 84.2% |
+| **Gemma 4 31B** | **88.6%** | 95.7% | 83.9% | 93.3% | 94.9% | 91.7% | 78.9% |
 
 Full per-question evaluation results are available in [`results/platform/`](results/platform/) and [`results/oss/`](results/oss/).
 
