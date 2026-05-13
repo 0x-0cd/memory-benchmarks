@@ -160,19 +160,19 @@ Results using the Mem0 managed platform with the v3 memory pipeline.
 
 | Metric | Top 200 | Top 50 |
 |--------|---------|--------|
-| **Overall** | **93.4%** (467/500) | **90.4%** (452/500) |
+| **Overall** | **94.4%** (472/500) | **94.8%** (474/500) |
 
 <details>
 <summary>LongMemEval breakdown by question type</summary>
 
 | Question Type | Top 200 | Top 50 |
 |---------------|---------|--------|
-| knowledge-update | 96.2% (75/78) | 96.2% (75/78) |
-| multi-session | 86.5% (115/133) | 82.0% (109/133) |
-| single-session-assistant | 100.0% (56/56) | 92.9% (52/56) |
-| single-session-preference | 96.7% (29/30) | 86.7% (26/30) |
-| single-session-user | 97.1% (68/70) | 95.7% (67/70) |
-| temporal-reasoning | 93.2% (124/133) | 92.5% (123/133) |
+| knowledge-update | 93.6% (73/78) | 93.6% (73/78) |
+| multi-session | 88.0% (117/133) | 93.2% (124/133) |
+| single-session-assistant | 98.2% (55/56) | 98.2% (55/56) |
+| single-session-preference | 96.7% (29/30) | 93.3% (28/30) |
+| single-session-user | 98.6% (69/70) | 98.6% (69/70) |
+| temporal-reasoning | 97.0% (129/133) | 94.0% (125/133) |
 
 </details>
 
@@ -180,17 +180,17 @@ Results using the Mem0 managed platform with the v3 memory pipeline.
 
 | Metric | Top 200 | Top 50 |
 |--------|---------|--------|
-| **Overall** | **91.6%** (1410/1540) | **82.7%** (1273/1540) |
+| **Overall** | **92.5%** (1425/1540) | **91.8%** (1414/1540) |
 
 <details>
-<summary>LoCoMo breakdown by question type</summary>
+<summary>LoCoMo breakdown by question type (avg across top_10/20/50/200)</summary>
 
-| Question Type | Top 200 | Top 50 |
-|---------------|---------|--------|
-| single-hop | 92.3% | 82.8% |
-| multi-hop | 93.3% | 82.3% |
-| open-domain | 76.0% | 70.8% |
-| temporal | 92.8% | 86.3% |
+| Question Type | Avg (Top 10–200) |
+|---------------|------------------|
+| single-hop | 91.2% |
+| multi-hop | 91.3% |
+| open-domain | 72.7% |
+| temporal | 92.0% |
 
 </details>
 
