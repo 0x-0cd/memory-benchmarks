@@ -63,6 +63,7 @@ TOP_K = int(os.getenv("TOP_K", "50"))
 CUTOFFS = [10, 20, 50]
 MAX_CONVERSATIONS = int(os.getenv("MAX_CONVERSATIONS", "5"))
 MAX_QUESTIONS = int(os.getenv("MAX_QUESTIONS", "100"))
+ANSWER_RETRIES = int(os.getenv("ANSWER_RETRIES", "5"))    # 空回答重试次数
 MNEME_PROJECT_DIR = os.path.expanduser("~/projects/mneme")
 CONV_START = int(os.getenv("CONV_START", "0"))       # 起始 conversation index
 CONV_END = int(os.getenv("CONV_END", "9"))            # 结束 conversation index
@@ -265,8 +266,8 @@ async def main():
                 print(f"     ⚠️  No results! Skipping...")
                 continue
 
-            # 2. Generate answer
-            # Normalise search results for prompt (key="memory", not "content")
+            # 2. Generate answer (with retry on empty response)
+            import asyncio
             prompt_results = []
             for m, _ in search_results[:50]:
                 md = m.to_dict()
@@ -279,11 +280,25 @@ async def main():
                 question, prompt_results,
                 reference_date=ref_date_human,
             )
-            generated_answer = await answerer.generate(
-                system="", user=gen_prompt
-            )
-            if "ANSWER:" in generated_answer:
-                generated_answer = generated_answer.rsplit("ANSWER:", 1)[-1].strip()
+            generated_answer = ""
+            for attempt in range(ANSWER_RETRIES):
+                if attempt > 0:
+                    wait = min(2 ** attempt, 30)
+                    print(f"     🔄 第 {attempt+1} 次重试（等 {wait}s）...")
+                    sys.stdout.flush()
+                    await asyncio.sleep(wait)
+                raw = await answerer.generate(
+                    system="", user=gen_prompt
+                )
+                if "ANSWER:" in raw:
+                    generated_answer = raw.rsplit("ANSWER:", 1)[-1].strip()
+                else:
+                    generated_answer = raw.strip()
+                if generated_answer:
+                    break
+                print(f"     ⚠️  空回答，重试中...")
+            if not generated_answer:
+                print(f"     ❌  {ANSWER_RETRIES} 次重试后仍为空回答")
             print(f"     Answer: {generated_answer[:80]}...")
             sys.stdout.flush()
 
