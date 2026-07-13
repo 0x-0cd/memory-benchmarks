@@ -47,7 +47,10 @@ TOP_K = int(os.getenv("TOP_K", "50"))
 CUTOFFS = [10, 20, 50]
 MAX_CONVERSATIONS = int(os.getenv("MAX_CONVERSATIONS", "5"))
 MAX_QUESTIONS = int(os.getenv("MAX_QUESTIONS", "100"))
-MNEME_PROJECT_DIR = os.path.expanduser("~/projects/ai-memory-system")
+MNEME_PROJECT_DIR = os.path.expanduser("~/projects/mneme")
+CONV_START = int(os.getenv("CONV_START", "0"))       # 起始 conversation index
+CONV_END = int(os.getenv("CONV_END", "9"))            # 结束 conversation index
+BATCH_NAME = os.getenv("BATCH_NAME", "")              # 可选：批次标识，用于结果文件名
 
 
 def parse_short_date(date_str: str) -> str:
@@ -119,7 +122,8 @@ async def main():
     # Checkpoint: save after each conversation
     RESULTS_DIR = Path("results/locomo_mneme")
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    CHECKPOINT_PATH = RESULTS_DIR / "checkpoint_local.json"
+    checkpoint_prefix = f"checkpoint_local_{BATCH_NAME}_" if BATCH_NAME else "checkpoint_local"
+    CHECKPOINT_PATH = RESULTS_DIR / f"{checkpoint_prefix}.json"
 
     def save_checkpoint():
         CHECKPOINT_PATH.write_text(json.dumps({
@@ -137,7 +141,13 @@ async def main():
             "evaluations": all_evaluations,
         }, indent=2, ensure_ascii=False))
 
-    for conv_idx in range(min(MAX_CONVERSATIONS, len(dataset))):
+    conv_range = range(CONV_START, min(CONV_END + 1, len(dataset)))
+    conv_range = list(conv_range)[:MAX_CONVERSATIONS]  # 仍然受 MAX_CONVERSATIONS 限制
+    print(f"\n🔢 Conversation range: [{conv_range[0]}, {conv_range[-1]}] "
+          f"({len(conv_range)} convs, MAX_CONVERSATIONS={MAX_CONVERSATIONS})")
+    if BATCH_NAME:
+        print(f"   BATCH_NAME: {BATCH_NAME}")
+    for conv_idx in conv_range:
         entry = dataset[conv_idx]
         conversation = entry["conversation"]
         speaker_a = conversation["speaker_a"]
@@ -351,7 +361,8 @@ async def main():
     results_dir = Path("results/locomo_mneme")
     results_dir.mkdir(parents=True, exist_ok=True)
     timestamp = time.strftime("%Y%m%d_%H%M%S")
-    results_path = results_dir / f"locomo_mneme_local_{timestamp}.json"
+    prefix = f"locomo_mneme_local_{BATCH_NAME}_" if BATCH_NAME else "locomo_mneme_local_"
+    results_path = results_dir / f"{prefix}{timestamp}.json"
     results_path.write_text(json.dumps({
         "metadata": {
             "benchmark": "locomo",
@@ -360,6 +371,9 @@ async def main():
             "top_k": TOP_K,
             "cutoffs": CUTOFFS,
             "conversations": MAX_CONVERSATIONS,
+            "conv_start": CONV_START,
+            "conv_end": min(CONV_END, len(dataset) - 1) if dataset else 0,
+            "batch_name": BATCH_NAME,
             "max_questions": MAX_QUESTIONS,
             "mode": "local",
         },
