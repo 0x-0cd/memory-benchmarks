@@ -31,7 +31,26 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s | %(message)s")
 logger = logging.getLogger("locomo-mneme-local")
 
 # Config
+PROVIDER = os.getenv("PROVIDER", "direct").lower()
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
+DEEPSEEK_BASE = os.getenv("DEEPSEEK_BASE", "https://api.deepseek.com/v1")
+
+if PROVIDER == "opencode":
+    # Route through opencode-go proxy (OpenAI-compatible)
+    auth_path = os.path.expanduser("~/.local/share/opencode/auth.json")
+    try:
+        with open(auth_path) as f:
+            auth = json.load(f)
+        opencode_key = auth.get("opencode-go", {}).get("key", "")
+        if opencode_key:
+            DEEPSEEK_API_KEY = opencode_key
+            DEEPSEEK_BASE = "https://opencode.ai/zen/go/v1"
+        else:
+            logger.warning("opencode-go key not found in auth.json, falling back to direct")
+    except (FileNotFoundError, json.JSONDecodeError):
+        logger.warning("Cannot read opencode auth.json, falling back to direct")
+
 if not DEEPSEEK_API_KEY:
     auth_path = os.path.expanduser("~/.local/share/opencode/auth.json")
     try:
@@ -40,9 +59,6 @@ if not DEEPSEEK_API_KEY:
         DEEPSEEK_API_KEY = auth.get("deepseek", {}).get("key", "")
     except (FileNotFoundError, json.JSONDecodeError):
         pass
-
-DEEPSEEK_MODEL = os.getenv("DEEPSEEK_MODEL", "deepseek-v4-flash")
-DEEPSEEK_BASE = os.getenv("DEEPSEEK_BASE", "https://api.deepseek.com/v1")
 TOP_K = int(os.getenv("TOP_K", "50"))
 CUTOFFS = [10, 20, 50]
 MAX_CONVERSATIONS = int(os.getenv("MAX_CONVERSATIONS", "5"))
@@ -61,6 +77,9 @@ def parse_short_date(date_str: str) -> str:
 async def main():
     print("=" * 60)
     print("🧠 LoCoMo on Mneme — LOCAL MODE (no HTTP)")
+    print(f"   🔌 Provider mode: {PROVIDER}")
+    if PROVIDER == "opencode":
+        print(f"   🌐 Base URL: {DEEPSEEK_BASE}")
     print("=" * 60)
 
     # 1. Download dataset
